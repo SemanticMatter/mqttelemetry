@@ -23,5 +23,5 @@ dependencies = [
     "starlette>=0.46.1",
 ]
 [project.urls]
-Homepage = "https://github.com/quaat/mqttelemetry"
-Issues = "https://github.com/quaat/mqttelemetry/issues"
+Homepage = "https://github.com/SemanticMatter/mqttelemetry"
+Issues = "https://github.com/SemanticMatter/mqttelemetry/issues"
