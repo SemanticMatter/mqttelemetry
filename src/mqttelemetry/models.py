@@ -24,10 +24,11 @@ class MessagePayload(BaseModel):
     headers: dict[str, Any] = {}
     response_body: Any | None = None
     response_status_code: int
+    process_time_ns: int | None = None
 
     @classmethod
     async def from_request_response(
-        cls, request: Request, response: Response
+        cls, request: Request, response: Response, process_time_ns: int | None = None
     ) -> MessagePayload:
         # Extract request body as string
         request_body_str = None
@@ -47,22 +48,12 @@ class MessagePayload(BaseModel):
         headers = dict(request.headers)
 
         # Extract and process response body
-        response_body = None
-        try:
-            if hasattr(response, "body"):
-                response_body = response.body
-                if response_body is not None:
-                    if isinstance(response_body, bytes):
-                        response_body = response_body.decode("utf-8") # type: ignore [assignment]
-                    try:
-                        response_body = json.loads(response_body)
-                    except json.JSONDecodeError as decode_error:
-                        logger.warning(
-                            "Failed to decode the JSON body response: %s", decode_error
-                        )
-
-        except Exception as exc:
-            logger.warning("Could not extract response body: %s", exc)
+        response_body = response.body
+        if response_body:
+            try:
+                response_body = json.loads(response_body)
+            except json.JSONDecodeError:
+                response_body = response_body.decode("utf-8")
 
         status_code = getattr(response, "status_code", 500)
 
@@ -75,4 +66,5 @@ class MessagePayload(BaseModel):
             headers=headers,
             response_body=response_body,
             response_status_code=status_code,
+            process_time_ns=process_time_ns,
         )
