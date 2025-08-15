@@ -10,4 +10,4 @@ jobs:
     uses: SINTEF/ci-cd/.github/workflows/ci_automerge_prs.yml@v2.9.2
     if: github.repository_owner == 'SemanticMatter' && ( ( startsWith(github.event.pull_request.head.ref, 'dependabot/') && github.actor == 'dependabot[bot]' ) || ( github.event.pull_request.head.ref == 'pre-commit-ci-update-config' && github.actor == 'pre-commit-ci[bot]' ) )
     secrets:
-      PAT: ${{ secrets.SEMANTICMATTER_PAT }}
+      PAT: ${{ secrets.BOT_PAT }}
