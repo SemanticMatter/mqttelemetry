@@ -1,0 +1,98 @@
+name: CI - Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'push-action/**'  # Allow pushing to protected branches (using CasperWA/push-protected)
+
+env:
+  PIP_INDEX_URL: ${{ vars.GITLAB_PACKAGE_REGISTRY_URL }}/simple
+  VENV_NAME: .ci-venv
+
+  # Avoid uploading build records as a GitHub Artifact
+  DOCKER_BUILD_RECORD_UPLOAD: false
+
+jobs:
+  basic-tests:
+    name: External
+    uses: SINTEF/ci-cd/.github/workflows/ci_tests.yml@v2.9.2
+    with:
+      # General setup
+      install_extras: "[dev]"
+
+      # pre-commit
+      run_pre-commit: false
+
+      # pylint & safety
+      run_pylint: false
+      run_safety: false
+
+      # Build dist
+      python_version_package: "3.10"
+      build_libs: flit
+      build_cmd: flit build
+
+      # Build documentation
+      run_build_docs: false
+
+  pip-audit:
+    name: pip-audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v5
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install pip-audit
+        run: |
+          python -m pip install -U pip
+          pip install -U setuptools wheel
+          pip install -e .[dev]
+
+      - name: Run pip-audit
+        uses: pypa/gh-action-pip-audit@v1.1.0
+
+  pytest:
+    runs-on: ubuntu-latest
+    # Disable this job for now
+    if: ! always()
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+    - name: Checkout ${{ github.repository }}
+      uses: actions/checkout@v5
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -U setuptools wheel
+        pip install -U -e .[testing]
+
+    - name: Run tests
+      run: pytest -vv --color=yes --cov-report=xml
+
+    - name: Upload coverage
+      if: github.repository_owner == 'SemanticMatter'
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+        env_vars: PYTHON
+      env:
+        PYTHON: ${{ matrix.python-version }}
