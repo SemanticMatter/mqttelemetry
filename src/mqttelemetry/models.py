@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from starlette.requests import Request
 from starlette.responses import Response
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class MessagePayload(BaseModel):
@@ -37,8 +37,8 @@ class MessagePayload(BaseModel):
             if raw_body:
                 request_body_str = raw_body.decode("utf-8")
                 request_body_str = " ".join(request_body_str.split())
-        except Exception as exc:
-            logger.warning("Could not extract request body: %s", exc)
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning("Could not extract request body.", exc_info=exc)
 
         # Extract request details
         endpoint_path = request.url.path

@@ -71,6 +71,9 @@ allow_redefinition = true
 warn_unreachable = true
 plugins = ["pydantic.mypy"]
 
+[tool.ruff]
+line-length = 108
+
 [tool.ruff.lint]
 extend-select = [
   "E",  # pycodestyle
@@ -114,4 +117,3 @@ isort.required-imports = ["from __future__ import annotations"]
 #     "error",
 # ]
 # log_level = "DEBUG"
-
