@@ -62,7 +62,7 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
     # Disable this job for now
-    if: ! always()
+    if: false
 
     strategy:
       fail-fast: false
