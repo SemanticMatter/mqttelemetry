@@ -4,4 +4,5 @@ MQTTelemetry is a lightweight library designed to simplify working with MQTT pro
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
+See the [LICENSE](LICENSE) file for details.

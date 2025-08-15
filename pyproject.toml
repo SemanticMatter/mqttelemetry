@@ -1,27 +1,119 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+### Building Python project
 
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+### Python project metadata
 
 [project]
 name = "mqttelemetry"
-version = "0.1.5"
 authors = [
-    { name = "Thomas F. Hagelien" }
+    { name = "Thomas F. Hagelien", email = "thomas.f.hagelien@sintef.no" }
 ]
-description = "MQTT based telemetry for FastAPI applications"
+description = "MQTT-based telemetry for FastAPI/Starlette applications"
 readme = "README.md"
-requires-python = ">=3.9"
+license = {file = "LICENSE"}
 classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Natural Language :: English",
     "Operating System :: OS Independent",
 ]
+requires-python = "~=3.10"
+dynamic = ["version"]
 
 dependencies = [
-    "pydantic>=2.10.6",
-    "paho-mqtt>=2.1",
-    "starlette>=0.46.1",
+    "paho-mqtt~=2.1",
+    "pydantic>=2.11",
+    "starlette>=0.47.2",
 ]
+
+[project.optional-dependencies]
+pre-commit = ["pre-commit ~=4.3"]
+# testing = [
+#     "httpx ~=0.28.1",  # required for Starlette's TestClient
+#     "pytest ~=8.3",
+#     "pytest-cov ~=6.1",
+#     "pytest-httpx ~=0.35.0",
+# ]
+dev = ["mqttelemetry[pre-commit]"]
+
 [project.urls]
 Homepage = "https://github.com/SemanticMatter/mqttelemetry"
 Issues = "https://github.com/SemanticMatter/mqttelemetry/issues"
+
+### Tool configurations
+
+[tool.flit.sdist]
+exclude = [
+    ".gitignore",
+    ".markdownlint.yaml",
+    ".pre-commit-config.yaml",
+    ".github/",
+]
+
+[tool.black]
+line-length = 108
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+scripts_are_modules = true
+warn_unused_configs = true
+hide_error_codes = false
+allow_redefinition = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+
+[tool.ruff]
+line-length = 108
+
+[tool.ruff.lint]
+extend-select = [
+  "E",  # pycodestyle
+  "F",  # pyflakes
+  "B",  # flake8-bugbear
+  "BLE",  # flake8-blind-except
+  "I",  # isort
+  "ARG",  # flake8-unused-arguments
+  "C4",  # flake8-comprehensions
+  "ICN",  # flake8-import-conventions
+  "G",  # flake8-logging-format
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  "PL",  # pylint
+  "PT",  # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "RET",  # flake8-return
+  "RUF",  # Ruff-specific
+  "SIM",  # flake8-simplify
+  "T20",  # flake8-print
+  "YTT",  # flake8-2020
+  "EXE",  # flake8-executable
+  "PYI",  # flake8-pyi
+]
+ignore = [
+  "PLC",  # Convention related pylint codes
+  "PLR",  # Refactor related pylint codes
+]
+isort.required-imports = ["from __future__ import annotations"]
+
+# [tool.ruff.lint.extend-per-file-ignores]
+# "tests/**" = [
+#     "T20",  # flake8-print
+# ]
+
+# [tool.pytest.ini_options]
+# minversion = "8.3"
+# addopts = "-rs --cov=mqttelemetry --cov-report=term-missing:skip-covered --no-cov-on-fail"
+# filterwarnings = [
+#     # Fail on any warning
+#     "error",
+# ]
+# log_level = "DEBUG"
