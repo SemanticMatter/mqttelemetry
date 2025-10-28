@@ -11,6 +11,10 @@ updates:
     - CI/CD
     - skip-changelog
     - priority/low
+  groups:
+    github-actions:
+      patterns:
+        - "*"
 
 - package-ecosystem: pip
   directories:
