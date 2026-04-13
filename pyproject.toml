@@ -30,12 +30,12 @@ dynamic = ["version"]
 
 dependencies = [
     "paho-mqtt~=2.1",
-    "pydantic>=2.11",
-    "starlette>=0.47.2",
+    "pydantic>=2.12.5",
+    "starlette>=1.0.0",
 ]
 
 [project.optional-dependencies]
-pre-commit = ["pre-commit ~=4.3"]
+pre-commit = ["pre-commit ~=4.5"]
 # testing = [
 #     "httpx ~=0.28.1",  # required for Starlette's TestClient
 #     "pytest ~=8.3",
