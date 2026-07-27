@@ -37,7 +37,7 @@ class MessagePayload(BaseModel):
             if raw_body:
                 request_body_str = raw_body.decode("utf-8")
                 request_body_str = " ".join(request_body_str.split())
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             LOGGER.warning("Could not extract request body.", exc_info=exc)
 
         # Extract request details
